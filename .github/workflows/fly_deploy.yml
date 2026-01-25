@@ -23,9 +23,11 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: client
+          install-command: npm install
           build: npm run build
-          start: npm run dev
+          start: npm run dev -- --host
           wait-on: 'http://localhost:5173'
+          wait-on-timeout: 120
 
   deploy:
     runs-on: ubuntu-latest
