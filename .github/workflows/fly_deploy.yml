@@ -1,0 +1,66 @@
+name: Fly Deploy
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Backend Tests
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23'
+      - name: Run Go Tests
+        run: cd server && go test ./...
+
+      # Frontend Tests (Cypress)
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: client
+          build: npm run build
+          start: npm run dev
+          wait-on: 'http://localhost:5173'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: deploy 
+    permissions:
+      contents: write 
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Tag Name
+        id: tag
+        run: echo "tag_name=v0.1.$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          name: Release ${{ steps.tag.outputs.tag_name }}
+          body: |
+            ### Kielibuddy Automated Release
+            - **Status:** Phase 1 (Landing Page)
+            - **Live URL:** https://kielibuddy.fly.dev
+            - Built with Go 1.23 and React 22 (Vite)
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
