@@ -1,5 +1,5 @@
 app = "kielibuddy"
-primary_region = "arn" # Helsinki region, perfect for your Finnish app
+primary_region = "arn"
 
 [http_service]
   internal_port = 8080
