@@ -15,6 +15,7 @@ type UserRepository struct {
 	collection *mongo.Collection
 }
 
+// creating a new user repository
 func NewUserRepository(db *mongo.Database) *UserRepository {
 	return &UserRepository{
 		collection: db.Collection(os.Getenv("COLLECTION_USERS")),
@@ -23,7 +24,7 @@ func NewUserRepository(db *mongo.Database) *UserRepository {
 
 func (r *UserRepository) CreateUser(ctx context.Context, user *model.User) error {
 	user.CreatedAt = time.Now()
-	
+
 	result, err := r.collection.InsertOne(ctx, user)
 	if err != nil {
 		return err
