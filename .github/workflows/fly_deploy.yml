@@ -1,7 +1,7 @@
 name: Fly Deploy
 on:
   push:
-    branches: [ main ]
+    tags: [ 'v*' ]
 
 jobs:
   test:
@@ -50,15 +50,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate Tag Name
-        id: tag
-        run: echo "tag_name=v0.1.$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
-
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.tag.outputs.tag_name }}
-          name: Release ${{ steps.tag.outputs.tag_name }}
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           body: |
             ### Kielibuddy Automated Release
             - **Status:** Phase 1 (Landing Page)
