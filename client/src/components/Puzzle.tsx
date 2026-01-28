@@ -12,7 +12,7 @@ export default function Puzzle() {
 
     return (
         <div className="min-h-screen flex flex-col">
-            <div className="flex-grow">
+            <div className="grow">
                 <PuzzleList words={words} onProgress={updateProgress} />
             </div>
 
