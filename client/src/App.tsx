@@ -1,37 +1,32 @@
-import { useState, useEffect } from 'react'
-import logo from './assets/logo.png'
-import './App.css'
+import { useNavigate } from 'react-router-dom';
+import Footer from './components/Footer';
 
 function App() {
-  const [status, setStatus] = useState("Checking connection...")
-  const currentYear = new Date().getFullYear();
-
-  useEffect(() => {
-    fetch('/api/v1/health')
-      .then(res => res.json())
-      .then(data => setStatus(data.status))
-      .catch(() => setStatus("Backend unreachable"));
-  }, [])
+  const navigate = useNavigate();
 
   return (
-    <div className="container">
-      <main className="content">
-        <img src={logo} className="main-logo" alt="Kielibuddy Logo" />
-        <h2 className="tagline">Finnish vocabulary, simplified.</h2>
-        
-        <div className="card">
-          <h1>Coming Soon</h1>
-          <p>Rapidly developing a smarter way to master the Finnish language.</p>
-          <div className="badge">
-            <span className="dot"></span> {status}
-          </div>
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-gray-50 px-4">
+      <div className="flex grow flex-col items-center justify-center">
+        <div className="mb-1">
+          <h1 className="text-6xl font-extrabold font-logo tracking-tight select-none">
+            <span className="text-blue-800">kieli</span>
+            <span className="text-red-700">buddy</span>
+          </h1>
         </div>
-      </main>
+        <p className="mt-2 text-lg text-slate-500 font-medium text-center">
+          Finnish vocabulary, simplified.
+        </p>
+        <div className="mt-12">
+          <button
+            onClick={() => navigate('/puzzle')}
+            className="bg-blue-900 text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-blue-800 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-900/20 cursor-pointer"
+          >
+            try now
+          </button>
+        </div>
+      </div>
 
-      <footer className="footer">
-        <p>© {currentYear} Kielibuddy | Built by Thiwanka</p>
-        <p className="version-tag">Version 0.1.0-alpha</p>
-      </footer>
+      <Footer />
     </div>
   )
 }
