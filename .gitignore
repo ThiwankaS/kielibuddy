@@ -1,6 +1,36 @@
+# Ignore everything
+*
+# But don't ignore directories
+!*/
+# And don't ignore your source code and config files
+!*.go
+!go.mod
+!go.sum
+!.gitignore
+!*.md
+!*.yaml
+!*.http
+!*.sql
+!*.toml
+!Dockerfile
+
+!*.js
+!*.ts
+!*.css
+!*.html
+!*.json
+!*.svg
+!*.jpeg
+!*.png
+!*.gif
+!*.tsx
+!*.jsx
+!tsconfig.tsbuildinfo
+
 node_modules/
 dist/
 .env
 .env.release
 .env.test
 .DS_Store
+server

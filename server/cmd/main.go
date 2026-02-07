@@ -5,26 +5,23 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
+	"github.com/thiwankas/kielibuddy/server/internal/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func main () {
 	
-	// Reading the enviorenment variables
-	port		:= os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	} 
-	envType		:= os.Getenv("APP_ENV")
-	mongoURI	:= os.Getenv("MONGO_URI")
-
-	fmt.Println("----------------- Starting the app in %s mode -----------------", envType)
+	// Loading server configurations
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("----------------- Starting the app in %s mode -----------------\n", cfg.Env)
 
 	// Connecting to MongoDB
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoURI))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(cfg.Uri))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,12 +35,12 @@ func main () {
 
 	// Test api
 	http.HandleFunc("/api/hello", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello from the %S Backend !", envType)
+		fmt.Fprintf(w, "Hello from the %S Backend !", cfg.Env)
 	})
 
 	fs := http.FileServer(http.Dir("./dist"))
 	http.Handle("/", fs)
 
-	fmt.Printf("KieliBuddy server running on port %s in %s mode...\n", port, envType)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	fmt.Printf("KieliBuddy server running on port %s in %s mode...\n", cfg.Port, cfg.Env)
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
 }
