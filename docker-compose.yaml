@@ -1,0 +1,28 @@
+services:
+  # --- TEST ENVIRONMENT ---
+  # Reachable at http://localhost:8080
+  kielibuddy-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kielibuddy_test
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env.test
+    environment:
+      - APP_ENV=TESTING
+
+  # --- RELEASE ENVIRONMENT ---
+  # Reachable at http://localhost:9090
+  kielibuddy-release:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kielibuddy_release
+    ports:
+      - "9090:8080" # Maps local 9090 to container 8080
+    env_file:
+      - .env.release
+    environment:
+      - APP_ENV=PRODUCTION

@@ -1,12 +1,8 @@
-module github.com/thiwankas/kielibuddy
+module github.com/thiwankas/kielibuddy/server
 
 go 1.23.0
 
-require (
-	github.com/gorilla/mux v1.8.1
-	github.com/joho/godotenv v1.5.1
-	go.mongodb.org/mongo-driver v1.17.7
-)
+require go.mongodb.org/mongo-driver v1.17.9
 
 require (
 	github.com/golang/snappy v0.0.4 // indirect
