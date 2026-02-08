@@ -10,7 +10,7 @@ WORKDIR /app/server
 COPY server/go.mod server/go.sum* ./
 RUN go mod download
 COPY server/ .
-RUN go build -o /kielibuddy-server cmd/main.go
+RUN go build -o /kielibuddy-server ./cmd
 
 FROM alpine:latest
 WORKDIR /root/

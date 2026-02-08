@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
+	"time"
 
 	"github.com/thiwankas/kielibuddy/server/internal/config"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,29 +18,35 @@ func main () {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("----------------- Starting the app in %s mode -----------------\n", cfg.Env)
+	fmt.Printf("----------------- Starting the app -----------------\n")
+
+	// Wating for 5 seconds to check the connection
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second * 5)
+	defer cancel() // Resource clean-up
 
 	// Connecting to MongoDB
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(cfg.Uri))
+	// Initializing the connection
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(cfg.Uri))
 	if err != nil {
+		// This fails due to incorrect mongoDB URI errors
 		log.Fatal(err)
 	}
 
-	err = client.Ping(context.TODO(), nil)
+	// Check for connection is success 
+	err = client.Ping(ctx, nil)
 	if err != nil {
+		// This fails due to network-authentication errors
 		log.Fatal("Could not connected to MongoDB", err)
 	}
+	
+	fmt.Printf("Successfully connected to MongoDB!\n")
 
-	fmt.Println("Sucessfully conected to MongoDB!")
+	app := &application{
+		config: cfg,
+		db: client,
+	}
 
-	// Test api
-	http.HandleFunc("/api/hello", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello from the %S Backend !", cfg.Env)
-	})
-
-	fs := http.FileServer(http.Dir("./dist"))
-	http.Handle("/", fs)
-
-	fmt.Printf("KieliBuddy server running on port %s in %s mode...\n", cfg.Port, cfg.Env)
-	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
+	if err := app.run(app.mount()); err != nil  {
+		log.Fatal("Server failed to start!")
+	}
 }
