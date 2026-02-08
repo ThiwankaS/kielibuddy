@@ -20,9 +20,11 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: kielibuddy_release
+    restart: always
     ports:
-      - "9090:8080" # Maps local 9090 to container 8080
+      - "9090:8080"
     env_file:
       - .env.release
     environment:
       - APP_ENV=PRODUCTION
+      - PORT=8080
