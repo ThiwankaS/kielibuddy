@@ -8,7 +8,7 @@ import QuestionModal from './QuestionModal';
  */
 interface PuzzleListProps {
     words: Word[];
-    onProgress: (id: number, result: boolean) => void;
+    onProgress: (id: string, result: boolean) => void;
 }
 
 /**

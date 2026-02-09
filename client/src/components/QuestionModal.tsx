@@ -18,7 +18,7 @@ export default function QuestionModal({ word, onClose, onSubmit }: QuestionModal
         }
 
         // Compare selected option with the correct answer (case-insensitive trim)
-        const isCorrect = selectedOption.trim().toLowerCase() === word.answere.trim().toLowerCase();
+        const isCorrect = selectedOption.trim().toLowerCase() === word.correctAnswer.trim().toLowerCase();
 
         onSubmit(isCorrect);
         onClose();

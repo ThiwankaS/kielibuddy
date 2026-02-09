@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/thiwankas/kielibuddy/server/internal/config"
@@ -10,8 +11,8 @@ import (
 )
 
 type application struct {
-	config 	*config.Config
-	db		*mongo.Client
+	config *config.Config
+	db     *mongo.Client
 }
 
 func (app *application) mount() http.Handler {
@@ -25,18 +26,32 @@ func (app *application) mount() http.Handler {
 
 	// Home, Front-end static files
 	fs := http.FileServer(http.Dir("./dist"))
-	mux.Handle("/", fs)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// potential security risk: path traversal, but http.FileServer handles it.
+		// manually checking if file exists is safer for fallback logic.
+		path := "./dist" + r.URL.Path
+
+		// check if file exists
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			// If file does not exist, serve index.html (client-side routing)
+			http.ServeFile(w, r, "./dist/index.html")
+			return
+		}
+
+		// otherwise serve the file
+		fs.ServeHTTP(w, r)
+	})
 
 	return mux
 }
 
 func (app *application) run(handler http.Handler) error {
 	srv := &http.Server{
-		Addr: ":" + app.config.Port,
-		Handler: handler,
+		Addr:         ":" + app.config.Port,
+		Handler:      handler,
 		WriteTimeout: time.Second * 10,
-		ReadTimeout: time.Second * 5,
-		IdleTimeout: time.Second * 30,
+		ReadTimeout:  time.Second * 5,
+		IdleTimeout:  time.Second * 30,
 	}
 
 	fmt.Printf("kielibuddy app is running on %s in %s mode\n", app.config.Port, app.config.Env)

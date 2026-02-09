@@ -1,8 +1,8 @@
 export default interface Word {
-    id          : number;
-    word        : string;
-    answere     : string;
-    options     : string[];
-    attempted   : boolean;
-    result      : boolean; 
+    id: string;
+    word: string;
+    correctAnswer: string;
+    options: string[];
+    result?: boolean | null;
+    attempted?: boolean;
 }
