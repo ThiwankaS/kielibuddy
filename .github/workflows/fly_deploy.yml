@@ -41,11 +41,7 @@ jobs:
           start: npm run dev
           wait-on: 'http://localhost:5173'
           wait-on-timeout: 120
-        env:
-          # Prevent Cypress from trying to install/download binaries 
-          # multiple times if cached
-          CYPRESS_INSTALL_BINARY: 1 
-
+          
   deploy:
     runs-on: ubuntu-latest
     needs: test
