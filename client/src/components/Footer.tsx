@@ -14,7 +14,7 @@ export default function Footer() {
                     © {currentYear} Kielibuddy | Built by Thiwanka Somachandra
                 </p>
                 <p className="font-mono text-[0.70rem] mt-1 text-slate-400 uppercase tracking-widest">
-                    Version 0.1.0-alpha
+                    Version 1.2.2-alpha
                 </p>
             </div>
 

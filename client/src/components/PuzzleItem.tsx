@@ -35,7 +35,6 @@ export default function PuzzleItem({ word, onClick }: PuzzleItemProps) {
                 transition-all
                 active:translate-y-1
                 active:shadow-none
-                disabled:translate-y-1
                 disabled:shadow-none
             `}
         >
