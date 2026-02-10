@@ -37,6 +37,7 @@ export default function PuzzleItem({ word, onClick }: PuzzleItemProps) {
                 active:shadow-none
                 disabled:shadow-none
             `}
+            data-cy={`puzzle-item-${word.id}`}
         >
         </button>
     )
